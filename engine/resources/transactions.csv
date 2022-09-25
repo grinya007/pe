@@ -1,0 +1,11 @@
+id,client_id,amount,action,in_dispute,charged_back
+1,10,0.1,Deposit,false,false
+2,10,0.1,Deposit,true,false
+3,10,0.1,Deposit,false,false
+4,10,0.1,Deposit,false,true
+5,10,0.1,Deposit,false,false
+6,10,0.1,Deposit,false,false
+7,10,0.1,Deposit,false,false
+8,10,0.1,Deposit,false,true
+9,10,0.1,Deposit,false,false
+10,10,0.1,Deposit,true,false
