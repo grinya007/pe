@@ -5,8 +5,11 @@ use serde::{
 
 #[derive(Debug, Error)]
 pub enum Error {
+    /// An attempt to modify a frozen account
     ClientLocked,
+    /// An attempt to withdraw more than there is `available`
     WithdrawInsufficientFunds,
+    /// An attempt to dispute more than there is `available`
     DisputeInsufficientFunds,
 }
 

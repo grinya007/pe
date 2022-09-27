@@ -2,10 +2,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Error)]
 pub enum Error {
+    /// An attemt to dispute a withdrawal transaction
     DisputeWithdrawal,
+    /// An attempt to resolve a transaction that hasn't been disputed
     ResolveNonDisputed,
+    /// An attempt to charge back a transaction that hasn't been disputed
     ChargeBackNonDisputed,
+    /// A subsequent attempt to open dispute
     AlreadyInDispute,
+    /// An attempt to dispute a transaction that has already been charged back
     AlreadyChargedBack,
 }
 

@@ -11,11 +11,34 @@ use store::{store_db::StoreDBBuilder, store_mem::StoreMem};
 
 #[test]
 fn small() {
-    test_processor("small", 3);
+    test_processor("small", 3, vec!["WithdrawInsufficientFunds"]);
 }
 
-#[allow(unused_must_use)]
-fn test_processor(dataset: &str, txbuffer: usize) {
+#[test]
+fn medium() {
+    test_processor(
+        "medium",
+        5,
+        vec![
+            "WithdrawInsufficientFunds",
+            "AlreadyInDispute",
+            "ClientIdMismatch",
+            "ClientLocked",
+            "AmountNegative",
+            "AlreadyChargedBack",
+            "DisputeInsufficientFunds",
+            "DisputeWithdrawal",
+            "ResolveNonDisputed",
+            "ChargeBackNonDisputed",
+            "AmountUnnecessary",
+            "AmountUnspecified",
+            "TransactionIdDuplicate",
+            "TransactionNotFound",
+        ],
+    );
+}
+
+fn test_processor(dataset: &str, txbuffer: usize, errors: Vec<&str>) {
     let mut processor = Processor::new(
         StoreMem::new(),
         StoreDBBuilder::new(txbuffer)
@@ -30,9 +53,17 @@ fn test_processor(dataset: &str, txbuffer: usize) {
     ))
     .expect("CSV reader created");
 
+    let mut test_errors = vec![];
     for record in reader.deserialize() {
-        processor.process(&record.expect("Valid record"));
+        if let Err(error) = processor.process(&record.expect("Valid record")) {
+            test_errors.push(format!("{:?}", error));
+        }
     }
+
+    assert_eq!(
+        errors,
+        test_errors.iter().map(String::as_str).collect::<Vec<_>>()
+    );
 
     let tmp_file = format!(
         "{}/accounts_{}_{}.csv",
