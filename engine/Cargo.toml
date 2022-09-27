@@ -1,0 +1,15 @@
+[package]
+name = "engine"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+csv = { version = "1.1" }
+derive-error = { version = "0.0.5" }
+serde = { version = "1.0", features = ["derive"] }
+store = { path = "../store" }
+
+[dev-dependencies]
+file_diff = { version = "1.0.0" }
+itertools = { version = "0.10.3" }
+random-string = { version = "1.0" }
