@@ -1,0 +1,17 @@
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "3", features = ["derive"] }
+csv = { version = "1.1" }
+engine = { path = "../engine" }
+log = { version = "0.4" }
+store = { path = "../store" }
+tracing = { version = "0.1", features = ["release_max_level_info"] }
+tracing-subscriber = { version = "0.3", features = ["fmt"] }
+
+[[bin]]                 
+name = "pe"
+path = "src/main.rs"

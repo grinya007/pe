@@ -1,3 +1,3 @@
 [workspace]
-members = ["store", "engine"]
+members = ["store", "engine", "cli"]
 resolver = "2"
