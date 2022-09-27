@@ -1,3 +1,4 @@
+//! The pure in-memory key-value store
 use std::{collections::HashMap, error::Error, hash::Hash};
 
 use super::store::Store;

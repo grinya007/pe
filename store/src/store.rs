@@ -1,3 +1,4 @@
+//! The common interface of a key-value store
 use std::error::Error;
 
 pub trait Store<K, V> {

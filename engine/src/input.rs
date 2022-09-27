@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub enum Action {
     #[serde(rename = "deposit")]
     Deposit,
@@ -14,7 +14,7 @@ pub enum Action {
     ChargeBack,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Record {
     #[serde(rename = "type")]
     pub action: Action,

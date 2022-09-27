@@ -1,3 +1,5 @@
+//! The `StoreDB` hybrid key-value store is meant to provide control over the memory usage of a
+//! process at the cost of using HDD/SSD storage
 use bincode::{deserialize, serialize};
 use serde::{Deserialize, Serialize};
 use sled::Db;
@@ -11,18 +13,22 @@ use std::{
 
 use super::store::Store;
 
+// below is the stable way to make an alias to a trait
+// very much looking forward to seeing https://github.com/rust-lang/rust/issues/41517 resolved =)
 pub trait Key: Clone + Eq + Hash + Serialize + for<'a> Deserialize<'a> {}
 impl<T> Key for T where T: Clone + Eq + Hash + Serialize + for<'a> Deserialize<'a> {}
 
 pub trait Value: Serialize + for<'a> Deserialize<'a> {}
 impl<T> Value for T where T: Serialize + for<'a> Deserialize<'a> {}
 
+/// The builder for `StoreDB`
 pub struct StoreDBBuilder {
     buffer_size: usize,
     db_path: Option<String>,
 }
 
 impl StoreDBBuilder {
+    /// `buffer_size` of the in-memory part of the store where the most recently used values are kept
     #[must_use]
     pub fn new(buffer_size: usize) -> Self {
         Self {
@@ -31,6 +37,9 @@ impl StoreDBBuilder {
         }
     }
 
+    /// Optional path to a db directory, when provided the `StoreDB`
+    /// is set to persistent mode (i.e. the database isn't removed on drop).
+    /// By default a temporary directory is used
     #[must_use]
     pub fn set_db_path(self, db_path: String) -> Self {
         Self {
@@ -40,6 +49,7 @@ impl StoreDBBuilder {
     }
 
     /// # Errors
+    /// Fs-related errors may bubble up from `sled::open`
     pub fn build<K: Key, V: Value>(&self) -> Result<StoreDB<K, V>, Box<dyn Error>> {
         let (db_path, is_temporary) = if let Some(path) = &self.db_path {
             (path.clone(), false)
@@ -138,6 +148,8 @@ impl<K: Key, V: Value> Store<K, V> for StoreDB<K, V> {
         }
     }
 
+    /// The implementation of `get` potentially mutates the instance of the `StoreDB` in order to
+    /// maintain the MRU in-memory part of the data
     fn get(&mut self, key: &K) -> Result<Option<&V>, Box<dyn Error>> {
         if self.memory.contains_key(key) {
             Ok(self.memory.get(key))

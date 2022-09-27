@@ -9,12 +9,22 @@ use store::store::Store;
 
 #[derive(Debug, Error)]
 pub enum Error {
+    /// A transaction of type Deposit or Withdrawal doesn't specify the amount of funds
     AmountUnspecified,
+    /// A transaction of type Dispute, Resolve or Chargeback *does* specify the amount of funds
     AmountUnnecessary,
+    /// The amount of funds specified is negative
     AmountNegative,
+    /// A transaction of type Deposit or Withdrawal with the ID that has been seen previously
     TransactionIdDuplicate,
+    /// A transaction of type Dispute, Resolve or Chargeback with the ID that hasn't been seen
+    /// previously
     TransactionNotFound,
+    /// A transaction of type Dispute, Resolve or Chargeback with the client ID that is different
+    /// with that of the original Deposit transaction
     ClientIdMismatch,
+    /// A transaction of type Dispute, Resolve or Chargeback with the client ID that can't be found
+    // FIXME: perhaps this is the error of a higher order
     ClientNotFound,
 }
 
